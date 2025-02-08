@@ -13,28 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Problem">
-      <UniqueIdentifier>{bf30726b-466d-4924-880b-48a3ef6e54e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Solver">
-      <UniqueIdentifier>{14d450cd-ae48-452a-bf09-9fdb245ffe2f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DenseLinearProblem.h">
-      <Filter>Header Files\Problem</Filter>
+    <ClInclude Include="Constraint.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DenseNonLinearProblem.h">
-      <Filter>Header Files\Problem</Filter>
+    <ClInclude Include="Objective.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DenseProblemBase.h">
-      <Filter>Header Files\Problem</Filter>
+    <ClInclude Include="Optimizer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DenseSolverBase.h">
-      <Filter>Header Files\Solver</Filter>
-    </ClInclude>
-    <ClInclude Include="TrustRegion.h">
-      <Filter>Header Files\Solver</Filter>
+    <ClInclude Include="Debug.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,48 +1,61 @@
 #include <iostream>
 #include <Eigen/dense>
-#include "TrustRegion.h"
-#include "DenseNonLinearProblem.h"  // or whatever your problem header is
+#include "Optimizer.h"
+#include "Objective.h"
+#include "Constraint.h"
+
+using namespace HKOpt;
+using namespace Eigen;
 
 int main() {
-    // Define a simple quadratic problem:
-    // f(x) = 0.5 * x^T A x - b^T x
-    // A is a positive-definite matrix, and b is a vector.
-
-    // Problem data
-    Eigen::MatrixXd A(2, 2);
-    A << 2, 0,
-        0, 2; // A positive definite matrix
-
-    Eigen::VectorXd b(2);
-    b << 1, 1;  // Vector b
-
-    Eigen::VectorXd x0(2);
-    x0 << 0, 0;  // Initial guess for x
-
-    // Create the problem
-    auto x_ptr = std::make_shared<Eigen::VectorXd>(x0);
-    auto A_ptr = std::make_shared<Eigen::MatrixXd>(A);
-    auto b_ptr = std::make_shared<Eigen::VectorXd>(b);
-
-    // Define the linear objective function: f(x) = 0.5 * x^T A x - b^T x
-    auto f = [&A_ptr, &b_ptr](const Eigen::VectorXd& x) -> double {
-        return 0.5 * x(0);
+    // Define a simple objective function f(x) = x^2
+    auto objective_function = [](const VectorXd& x) -> double {
+        return x.squaredNorm(); // f(x) = x^2
         };
 
-    // Create the dense linear problem
-    NLP::DenseNonLinearProblem problem(f, x_ptr, A_ptr, b_ptr);
+    // Define the gradient of the objective function f'(x) = 2x
+    auto gradient_function = [](const VectorXd& x) -> VectorXd {
+        return 2 * x; // f'(x) = 2x
+        };
 
+    // Define the Hessian of the objective function f''(x) = 2
+    auto hessian_function = [](const VectorXd& x) -> MatrixXd {
+        return 2 * MatrixXd::Identity(x.size(), x.size()); // f''(x) = 2
+        };
 
-    //std::cout << *problem.hessian();
-    // Trust Region Solver setup
-    NLP::TrustRegion<NLP::DenseNonLinearProblem> solver(10000, 1.0);  // Max 100 iterations and initial delta = 1.0
+    // Create the objective
+    std::shared_ptr<Objective<double>> objective = std::make_shared<Objective<double>>(
+        objective_function, gradient_function, hessian_function);
 
-    // Solve the problem
-    solver.solve(problem);
+    // Define no constraints for simplicity in this example
+    Eigen::VectorXd constraint_coeff(2);
+    constraint_coeff <<  1, 1;
+    auto constraint = std::make_shared<Constraint<double>>(constraint_coeff, 10, ConstraintType::GEQ);
 
-    // Output the results
-    //std::cout << "Solution found after " << solver.iteration_ << " iterations." << std::endl;
-    std::cout << "Optimal x: " << (*x_ptr).transpose() << std::endl;
+    Constraints<double> constraints({ constraint });
 
+    // Instantiate the optimizer (GradientDescent)
+    GradientDescent<double> optimizer(objective, constraints, 0.1, 10000);
+
+    // Initial guess (starting point)
+    VectorXd x0(2);
+    x0 << 100.0, 100.0; // Start at x = 10
+
+    // Optimize
+    OptimizerStatus status = optimizer.optimize(x0);
+
+    // Print results
+    std::cout << "Optimization Status: ";
+    switch (status) {
+    case OptimizerStatus::NOT_STARTED: std::cout << "NOT_STARTED"; break;
+    case OptimizerStatus::SUCCEEDED: std::cout << "SUCCEEDED"; break;
+    case OptimizerStatus::FAILED: std::cout << "FAILED"; break;
+    }
+    std::cout << std::endl;
+
+    //std::cout << "Iteration: " << optimizer.iteration() << std::endl;
+
+    std::cout << "Final x: " << optimizer.x().transpose() << std::endl;
+    
     return 0;
 }

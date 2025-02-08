@@ -131,11 +131,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="DenseSolverBase.h" />
-    <ClInclude Include="DenseLinearProblem.h" />
-    <ClInclude Include="DenseNonLinearProblem.h" />
-    <ClInclude Include="DenseProblemBase.h" />
-    <ClInclude Include="TrustRegion.h" />
+    <ClInclude Include="Constraint.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="Objective.h" />
+    <ClInclude Include="Optimizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HKOpt.cpp" />
